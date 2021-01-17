@@ -100,4 +100,20 @@ class ExcelToArrayBase implements IExcelToArray
     public function afterReadSheet()
     {
     }
+
+    /**
+     * 设置Map.
+     */
+    public function setMap(array $map)
+    {
+        $this->map = $map;
+    }
+
+    /**
+     * 获取Sheet数据.
+     */
+    public function getSheetData()
+    {
+        return $this->sheetData;
+    }
 }

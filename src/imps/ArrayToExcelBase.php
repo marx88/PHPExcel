@@ -115,4 +115,12 @@ class ArrayToExcelBase implements IArrayToExcel
     {
         return $this->curListRowIndex + 1 >= $this->listRowNum;
     }
+
+    /**
+     * 设置Map.
+     */
+    public function setMap(array $map)
+    {
+        $this->map = $map;
+    }
 }
