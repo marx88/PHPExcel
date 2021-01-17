@@ -31,12 +31,16 @@ class ExcelToArrayBase implements IExcelToArray
 
     /**
      * 创建IExcelToArray实例.
+     *
+     * @return static
      */
     public static function make(string $filepath)
     {
         $obj = new static();
         $obj->config = new Config();
         $obj->config->setFilepath($filepath);
+
+        return $obj;
     }
 
     /**
@@ -52,7 +56,7 @@ class ExcelToArrayBase implements IExcelToArray
      *
      * 读取每个单元格时调用该函数
      */
-    public function readCell(Cell &$cell): string
+    public function readCell(Cell $cell): string
     {
         $val = $cell->getCalculatedValue();
         if (is_object($val)) {

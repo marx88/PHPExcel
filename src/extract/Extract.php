@@ -64,19 +64,6 @@ class Extract
     }
 
     /**
-     * Extract destructor.
-     */
-    public function __destruct()
-    {
-        $this->sheet = null;
-        if ($this->exl) {
-            $this->exl->disconnectWorksheets();
-        }
-        $this->exl = null;
-        $this->excelToArray = null;
-    }
-
-    /**
      * 读取sheet到array.
      */
     public static function run(IExcelToArray $excelToArray)
@@ -99,7 +86,7 @@ class Extract
 
         $rowStart = $rowMin;
         $rowEnd = $rowStart + $maxRowNum - 1;
-        while ($rowStart < $rowMax) {
+        while ($rowStart <= $rowMax) {
             $reader = $this->getReader($type, $rowStart, $rowEnd);
             $excel = $reader->load($this->config->getFilepath());
             $sheet = $this->getWorkSheet($excel);

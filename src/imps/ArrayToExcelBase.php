@@ -25,12 +25,12 @@ class ArrayToExcelBase implements IArrayToExcel
     protected $curListRowIndex = 0;
 
     /**
-     * @var \ArrayAccess
+     * @var array|\ArrayAccess
      */
     protected $definedData;
 
     /**
-     * @var \ArrayAccess
+     * @var array|\ArrayAccess
      */
     protected $list;
 
@@ -50,8 +50,13 @@ class ArrayToExcelBase implements IArrayToExcel
 
     /**
      * 创建IArrayToExcel实例.
+     *
+     * @param array|\ArrayAccess $list
+     * @param array|\ArrayAccess $definedData
+     *
+     * @return static
      */
-    public static function make(\ArrayAccess $list, \ArrayAccess $definedData = null)
+    public static function make($list, $definedData = null)
     {
         $obj = new static();
         $obj->config = new Config();
@@ -59,6 +64,8 @@ class ArrayToExcelBase implements IArrayToExcel
         $obj->list = $list;
         $obj->definedData = is_null($definedData) ? [] : $definedData;
         $obj->listRowNum = count($obj->list);
+
+        return $obj;
     }
 
     /**

@@ -55,7 +55,9 @@ class Export
     }
 
     /**
-     * 下载.
+     * 下载导出.
+     *
+     * @return mixed
      */
     public function download()
     {
@@ -67,6 +69,21 @@ class Export
     }
 
     /**
+     * 保存导出.
+     *
+     * 此函数估计没用，现在写是为了测试filling函数
+     *
+     * @return mixed
+     */
+    public function save(string $filepath)
+    {
+        $writer = $this->filling();
+        $writer->setPreCalculateFormulas(false);
+
+        return $writer->save($filepath);
+    }
+
+    /**
      * 填充数据.
      */
     protected function filling(): IWriter
@@ -74,8 +91,9 @@ class Export
         $tmpFilePath = $this->config->getTmpFilePath();
         $excel = clone IOFactory::load($tmpFilePath);
         $sheet = $excel->getActiveSheet();
-        list($rowNum, $maxColName) = $sheet->getHighestRowAndColumn();
-        $colNum = Coordinate::columnIndexFromString($maxColName);
+        $highestArr = $sheet->getHighestRowAndColumn();
+        $rowNum = $highestArr['row'];
+        $colNum = Coordinate::columnIndexFromString($highestArr['column']);
         $this->fillingDefinedCells($sheet, $rowNum, $colNum);
         $this->fillingList($sheet, $rowNum + 1, $colNum);
 
@@ -92,7 +110,7 @@ class Export
         for ($rowCur = 1; $rowCur <= $rowNum; ++$rowCur) {
             for ($colCur = 1; $colCur <= $colNum; ++$colCur) {
                 $colCurStr = Coordinate::stringFromColumnIndex($colCur);
-                $cell = $rowCur.$colCurStr;
+                $cell = $colCurStr.$rowCur;
                 $txt = $sheet->getCell($cell)->getValue();
                 $txt = is_object($txt) ? $txt->__toString() : $txt;
                 $txt = trim($txt);
@@ -123,7 +141,7 @@ class Export
     {
         $specialCells = $this->config->getSpecialCells();
         $listIndex = 0;
-        while ($this->arrayToExcel->isReadListOver()) {
+        while (!$this->arrayToExcel->isReadListOver()) {
             $rowCur = $startRow + $listIndex;
 
             // 超过最大行则结束
@@ -131,7 +149,7 @@ class Export
                 break;
             }
 
-            for ($colCur = 0; $colCur <= $colNum; ++$colCur) {
+            for ($colCur = 1; $colCur <= $colNum; ++$colCur) {
                 $colCurStr = Coordinate::stringFromColumnIndex($colCur);
                 $cell = $colCurStr.$rowCur;
                 $val = $this->arrayToExcel->getListValue($colCurStr, $listIndex);
@@ -158,7 +176,7 @@ class Export
         $filename = $this->config->getExportFileName();
 
         // ie、360极速下载文件名乱码
-        if (preg_match('/(MSIE)|(Gecko)/', $_SERVER['HTTP_USER_AGENT'])) {
+        if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(MSIE)|(Gecko)/', $_SERVER['HTTP_USER_AGENT'])) {
             $filename = urlencode($filename);
         }
 

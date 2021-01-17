@@ -16,7 +16,7 @@ interface IExcelToArray
      *
      * 读取每个单元格时调用该函数
      */
-    public function readCell(Cell &$cell): string;
+    public function readCell(Cell $cell): string;
 
     /**
      * 处理行数据.
