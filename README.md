@@ -4,5 +4,5 @@ php excel lib
 
 ### 功能
 ----------
-- 文件上传：[mphp\tplib\upload\Upload](src/upload/Upload.php)
-- 文件锁：[mphp\tplib\lock\MutexLock](src/lock/MutexLock.php)
+- 导出：[mphp\excel\export\Export](src/export/Export.php)
+- 导入：[mphp\excel\extract\Extract](src/extract/Extract.php)
